@@ -89,8 +89,22 @@ body {
 	animation: fadeIn 0.6s ease-out 0.2s backwards;
 }
 
+.upload-grid {
+	display: grid;
+	grid-template-columns: 1fr 320px;
+	gap: 2rem;
+	align-items: start;
+}
+
+@media (max-width: 968px) {
+	.upload-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
 .upload-area {
 	position: relative;
+	height: 100%;
 }
 
 #file-input {
@@ -105,12 +119,15 @@ body {
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	padding: 3rem 2rem;
+	padding: 2rem 1.5rem;
 	border: 2px dashed var(--border-color);
 	border-radius: var(--radius);
 	cursor: pointer;
 	transition: var(--transition);
 	background: var(--surface-light);
+	min-height: 280px;
+	height: 100%;
+	gap: 0.75rem;
 }
 
 .upload-label:hover {
@@ -119,22 +136,51 @@ body {
 }
 
 .upload-icon {
-	width: 48px;
-	height: 48px;
+	width: 40px;
+	height: 40px;
 	color: var(--primary-color);
-	margin-bottom: 1rem;
 }
 
 .upload-text {
-	font-size: 1.125rem;
-	font-weight: 600;
+	font-size: 1rem;
+	font-weight: 500;
 	color: var(--text-primary);
-	margin-bottom: 0.25rem;
 }
 
 .upload-hint {
 	font-size: 0.875rem;
 	color: var(--text-secondary);
+}
+
+.upload-button {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.75rem 1.5rem;
+	background: var(--primary-color);
+	color: white;
+	border: none;
+	border-radius: 8px;
+	font-weight: 600;
+	font-size: 0.875rem;
+	cursor: pointer;
+	transition: var(--transition);
+	box-shadow: 0 2px 8px rgba(0, 136, 255, 0.3);
+}
+
+.upload-button:hover {
+	background: #0077ee;
+	transform: translateY(-2px);
+	box-shadow: 0 4px 12px rgba(0, 136, 255, 0.4);
+}
+
+.upload-button:active {
+	transform: translateY(0);
+}
+
+.upload-button svg {
+	width: 18px;
+	height: 18px;
 }
 
 /* Main Content Grid */
@@ -293,6 +339,134 @@ textarea:focus {
 	font-size: 1.25rem;
 	font-weight: bold;
 	text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* ROM Browser */
+.rom-browser {
+	flex: 1;
+}
+
+.browser-title {
+	font-size: 1.125rem;
+	font-weight: 600;
+	margin-bottom: 1rem;
+	color: var(--text-primary);
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.browser-icon {
+	width: 20px;
+	height: 20px;
+	color: var(--primary-color);
+}
+
+.rom-list {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.empty-state {
+	text-align: center;
+	color: var(--text-secondary);
+	padding: 2rem 1rem;
+	font-style: italic;
+}
+
+.rom-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0.75rem 1rem;
+	background: var(--surface-light);
+	border: 1px solid var(--border-color);
+	border-radius: 8px;
+	transition: var(--transition);
+	cursor: pointer;
+}
+
+.rom-item:hover {
+	background: var(--surface);
+	border-color: var(--primary-color);
+	transform: translateX(4px);
+}
+
+.rom-item.active {
+	background: rgba(0, 136, 255, 0.1);
+	border-color: var(--primary-color);
+	box-shadow: 0 0 0 1px var(--primary-color);
+}
+
+.rom-item-info {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	flex: 1;
+}
+
+.rom-icon {
+	width: 24px;
+	height: 24px;
+	color: var(--primary-color);
+	flex-shrink: 0;
+}
+
+.rom-details {
+	display: flex;
+	flex-direction: column;
+	gap: 0.125rem;
+}
+
+.rom-name {
+	font-weight: 500;
+	color: var(--text-primary);
+	font-size: 0.875rem;
+}
+
+.rom-meta {
+	font-size: 0.75rem;
+	color: var(--text-secondary);
+}
+
+.rom-actions {
+	display: flex;
+	gap: 0.5rem;
+}
+
+.rom-btn {
+	padding: 0.5rem;
+	background: transparent;
+	border: none;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: var(--transition);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.rom-btn svg {
+	width: 18px;
+	height: 18px;
+}
+
+.rom-btn-delete {
+	color: #ff4444;
+}
+
+.rom-btn-delete:hover {
+	background: rgba(255, 68, 68, 0.1);
+}
+
+.rom-btn-download {
+	color: var(--text-secondary);
+}
+
+.rom-btn-download:hover {
+	background: var(--surface);
+	color: var(--primary-color);
 }
 
 /* Footer */
