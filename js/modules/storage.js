@@ -64,6 +64,16 @@ export function updateRomMetadata(romId, updates) {
     
     if (rom) {
         rom.lastModified = new Date().toISOString();
+        
+        // Initialize metadata if it doesn't exist (for legacy ROMs)
+        if (!rom.metadata) {
+            rom.metadata = {
+                version: '1.0',
+                originalName: rom.name,
+                changeCount: 0
+            };
+        }
+        
         rom.metadata.changeCount = (rom.metadata.changeCount || 0) + 1;
         
         Object.assign(rom.metadata, updates);
@@ -205,7 +215,7 @@ export function getHistorySummary(romId) {
         currentPosition: history.currentIndex + 1,
         canUndo: canUndo(romId),
         canRedo: canRedo(romId),
-        lastModified: rom.lastModified,
-        changeCount: rom.metadata.changeCount || 0
+        lastModified: rom.lastModified || rom.uploadDate,
+        changeCount: rom.metadata?.changeCount || 0
     };
 }
