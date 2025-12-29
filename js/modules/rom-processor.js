@@ -1,6 +1,6 @@
 // ROM File Processing Module
 
-import { setCurrentRomState, setCurrentRom, applyColors } from './rom-editor.js';
+import { setCurrentRomState, setCurrentRom, applyColors, resetEditorState } from './rom-editor.js';
 
 const colors = [
     "000000", "FFFFFF", "880000", "AAFFEE", "CC44CC", "00CC55", "0000AA", "EEEE77",
@@ -8,6 +8,11 @@ const colors = [
 ];
 
 export function processRomFile(romFile, fileName, romId = null) {
+    // If this is a new upload (no romId), reset the editor state
+    if (!romId) {
+        resetEditorState();
+    }
+    
     const blobLine1 = romFile.slice(1141, 1178);
     const blobLine2 = romFile.slice(1178, 1195);
     const blobBorderColor = romFile.slice(3289, 3290);

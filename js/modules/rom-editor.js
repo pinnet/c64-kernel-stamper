@@ -25,6 +25,33 @@ export function getCurrentRomId() {
     return currentRomId;
 }
 
+export function resetEditorState() {
+    currentRomId = null;
+    currentRomState = {
+        line1: '',
+        line2: '',
+        borderColor: 14,
+        backgroundColor: 6,
+        textColor: 14
+    };
+    
+    // Clear form inputs
+    const line1Input = document.getElementById('rom-line-1');
+    const line2Input = document.getElementById('rom-line-2');
+    
+    if (line1Input) line1Input.value = '';
+    if (line2Input) line2Input.value = '';
+    
+    // Reset history UI
+    const undoBtn = document.getElementById('undo-btn');
+    const redoBtn = document.getElementById('redo-btn');
+    const historyInfo = document.getElementById('history-info');
+    
+    if (undoBtn) undoBtn.disabled = true;
+    if (redoBtn) redoBtn.disabled = true;
+    if (historyInfo) historyInfo.textContent = '0 changes';
+}
+
 export function setCurrentRomState(state) {
     currentRomState = { ...state };
 }
