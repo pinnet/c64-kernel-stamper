@@ -30,7 +30,7 @@ export function handleFileUpload(event) {
     reader.readAsDataURL(romFile);
     
     // Process the file
-    processRomFile(romFile, romFile.name);
+    processRomFile(romFile, romFile.name, null);
 }
 
 export function setupDragAndDrop() {

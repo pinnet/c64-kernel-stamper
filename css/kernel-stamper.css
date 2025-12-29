@@ -219,6 +219,67 @@ body {
 	border-radius: 2px;
 }
 
+/* Controls Header with History */
+.controls-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 1.5rem;
+}
+
+.controls-header .section-title {
+	margin-bottom: 0;
+}
+
+.history-controls {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.history-info {
+	font-size: 0.75rem;
+	color: var(--text-secondary);
+	padding: 0.25rem 0.5rem;
+	background: var(--surface-light);
+	border-radius: 4px;
+}
+
+.history-btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	background: var(--surface-light);
+	border: 1px solid var(--border-color);
+	border-radius: 8px;
+	cursor: pointer;
+	transition: var(--transition);
+	color: var(--text-primary);
+}
+
+.history-btn:hover:not(:disabled) {
+	background: var(--primary-color);
+	border-color: var(--primary-color);
+	transform: translateY(-2px);
+	box-shadow: 0 4px 12px rgba(0, 136, 255, 0.3);
+}
+
+.history-btn:active:not(:disabled) {
+	transform: translateY(0);
+}
+
+.history-btn:disabled {
+	opacity: 0.3;
+	cursor: not-allowed;
+}
+
+.history-btn svg {
+	width: 18px;
+	height: 18px;
+}
+
 /* C64 Screen Preview */
 #c64-screen {
 	display: flex;

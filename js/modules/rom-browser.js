@@ -29,6 +29,7 @@ function createRomItem(rom) {
     
     const sizeKB = (rom.size / 1024).toFixed(2);
     const uploadDate = new Date(rom.uploadDate).toLocaleDateString();
+    const changeCount = rom.metadata?.changeCount || 0;
     
     item.innerHTML = `
         <div class="rom-item-info" data-rom-id="${rom.id}">
@@ -38,7 +39,7 @@ function createRomItem(rom) {
             </svg>
             <div class="rom-details">
                 <div class="rom-name">${rom.name}</div>
-                <div class="rom-meta">${sizeKB} KB • ${uploadDate}</div>
+                <div class="rom-meta">${sizeKB} KB • ${uploadDate} • ${changeCount} edit${changeCount !== 1 ? 's' : ''}</div>
             </div>
         </div>
         <div class="rom-actions">
@@ -100,7 +101,7 @@ export function loadRomFromStorage(romId) {
         fetch(rom.data)
             .then(res => res.blob())
             .then(blob => {
-                processRomFile(blob, rom.name);
+                processRomFile(blob, rom.name, romId);
             });
     }
 }

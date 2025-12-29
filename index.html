@@ -83,7 +83,24 @@ READY.
 				</section>
 
 				<section class="controls-section card">
-					<h2 class="section-title">Configuration</h2>
+					<div class="controls-header">
+						<h2 class="section-title">Configuration</h2>
+						<div class="history-controls">
+							<span id="history-info" class="history-info">0 changes</span>
+							<button id="undo-btn" class="history-btn" title="Undo (Ctrl+Z)" disabled>
+								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+									<path d="M3 7v6h6"></path>
+									<path d="M21 17a9 9 0 00-9-9 9 9 0 00-6 2.3L3 13"></path>
+								</svg>
+							</button>
+							<button id="redo-btn" class="history-btn" title="Redo (Ctrl+Y)" disabled>
+								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+									<path d="M21 7v6h-6"></path>
+									<path d="M3 17a9 9 0 019-9 9 9 0 016 2.3l3 2.7"></path>
+								</svg>
+							</button>
+						</div>
+					</div>
 					
 					<div class="form-group">
 						<label for="rom-line-1" class="form-label">Line 1</label>

@@ -2,6 +2,7 @@
 
 import { loadRomBrowser, setupRomBrowserEvents } from './modules/rom-browser.js';
 import { handleFileUpload, setupDragAndDrop } from './modules/file-upload.js';
+import { setupEditorListeners } from './modules/rom-editor.js';
 
 // Initialize application
 function init() {
@@ -13,6 +14,7 @@ function init() {
     // Setup event listeners
     setupRomBrowserEvents();
     setupDragAndDrop();
+    setupEditorListeners();
     
     // Setup file input handler
     const fileInput = document.getElementById('file-input');

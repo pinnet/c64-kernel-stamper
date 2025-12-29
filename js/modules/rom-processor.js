@@ -1,11 +1,13 @@
 // ROM File Processing Module
 
+import { setCurrentRomState, setCurrentRom, applyColors } from './rom-editor.js';
+
 const colors = [
     "000000", "FFFFFF", "880000", "AAFFEE", "CC44CC", "00CC55", "0000AA", "EEEE77",
     "DD8855", "664400", "FF7777", "333333", "777777", "AAFF66", "0088FF", "BBBBBB"
 ];
 
-export function processRomFile(romFile, fileName) {
+export function processRomFile(romFile, fileName, romId = null) {
     const blobLine1 = romFile.slice(1141, 1178);
     const blobLine2 = romFile.slice(1178, 1195);
     const blobBorderColor = romFile.slice(3289, 3290);
@@ -43,7 +45,28 @@ export function processRomFile(romFile, fileName) {
                     reader5.onload = function(loadedEvent) {
                         parsedTextColor = loadedEvent.target.result.charCodeAt();
                         console.log("Text color from ROM: " + parsedTextColor);
+                        
+                        const state = {
+                            line1: parsedLine1,
+                            line2: parsedLine2,
+                            borderColor: parsedBorderColor,
+                            backgroundColor: parsedBackgroundColor,
+                            textColor: parsedTextColor
+                        };
+                        
+                        // Set current ROM for editor
+                        if (romId) {
+                            setCurrentRom(romId);
+                        }
+                        
+                        // Update state
+                        setCurrentRomState(state);
+                        
+                        // Draw screen
                         drawScreen(parsedLine1, parsedLine2, parsedBorderColor, parsedBackgroundColor, parsedTextColor);
+                        
+                        // Update form inputs
+                        updateFormInputs(parsedLine1, parsedLine2);
                     }
                     reader5.readAsText(blobTextColor);
                 }
@@ -65,4 +88,12 @@ function drawScreen(line1, line2, borderColor, backgroundColor, textColor) {
     textarea.style.borderColor = "#" + colors[borderColor];
     textarea.style.backgroundColor = "#" + colors[backgroundColor];
     textarea.style.color = "#" + colors[textColor];
+}
+
+function updateFormInputs(line1, line2) {
+    const line1Input = document.getElementById('rom-line-1');
+    const line2Input = document.getElementById('rom-line-2');
+    
+    if (line1Input) line1Input.value = line1;
+    if (line2Input) line2Input.value = line2;
 }
