@@ -3,6 +3,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Commodore 64 Boot Screen Editor</title>
   <meta name="description" content="Edit the text and color of Commodore 64 kernel ROMs">
@@ -14,14 +15,40 @@
 <body>
 	<script src="js/kernel-stamper.js"></script>
 
-	<div>
-		<input type="file" onchange="readRomFiles(event)" >
-	</div>
+	<div class="container">
+		<header class="header">
+			<h1>
+				<svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<rect x="2" y="3" width="20" height="14" rx="2"></rect>
+					<line x1="8" y1="21" x2="16" y2="21"></line>
+					<line x1="12" y1="17" x2="12" y2="21"></line>
+				</svg>
+				C64 Kernel Stamper
+			</h1>
+			<p class="subtitle">Customize your Commodore 64 boot screen</p>
+		</header>
 
-	<div id="rom-container">
-		<h2 id="rom-title"></h2>
-		<div id="c64-screen">
-			<textarea id="c64-screen-text" cols="40" rows="25">
+		<div class="main-content">
+			<section class="upload-section card">
+				<div class="upload-area">
+					<input type="file" id="file-input" onchange="readRomFiles(event)" accept=".bin,.rom">
+					<label for="file-input" class="upload-label">
+						<svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+							<polyline points="17 8 12 3 7 8"></polyline>
+							<line x1="12" y1="3" x2="12" y2="15"></line>
+						</svg>
+						<span class="upload-text">Choose Kernel ROM File</span>
+						<span class="upload-hint">or drag and drop here</span>
+					</label>
+				</div>
+			</section>
+
+			<div class="editor-grid">
+				<section class="preview-section card">
+					<h2 class="section-title">Preview</h2>
+					<div id="c64-screen">
+						<textarea id="c64-screen-text" cols="40" rows="25" spellcheck="false">
 
   **** COMMODORE 64 KERNEL STAMPER ****
 
@@ -30,61 +57,72 @@
 READY.
 █
 </textarea>
+					</div>
+				</section>
+
+				<section class="controls-section card">
+					<h2 class="section-title">Configuration</h2>
+					
+					<div class="form-group">
+						<label for="rom-line-1" class="form-label">Line 1</label>
+						<input type="text" id="rom-line-1" class="form-input" placeholder="First line of boot text" maxlength="37">
+					</div>
+					
+					<div class="form-group">
+						<label for="rom-line-2" class="form-label">Line 2</label>
+						<input type="text" id="rom-line-2" class="form-input" placeholder="Second line of boot text" maxlength="17">
+					</div>
+
+					<div class="color-group">
+						<label class="form-label">Border Color</label>
+						<div class="color-palette">
+							<button class="color-swatch" data-color="black" style="background-color: #000000;" title="Black"></button>
+							<button class="color-swatch" data-color="gray-1" style="background-color: #333333;" title="Dark Gray"></button>
+							<button class="color-swatch" data-color="gray-2" style="background-color: #777777;" title="Gray"></button>
+							<button class="color-swatch" data-color="gray-3" style="background-color: #BBBBBB;" title="Light Gray"></button>
+							<button class="color-swatch" data-color="white" style="background-color: #FFFFFF;" title="White"></button>
+							<button class="color-swatch" data-color="cyan" style="background-color: #AAFFEE;" title="Cyan"></button>
+							<button class="color-swatch" data-color="light-blue" style="background-color: #0088FF;" title="Light Blue"></button>
+							<button class="color-swatch" data-color="blue" style="background-color: #0000AA;" title="Blue"></button>
+							<button class="color-swatch" data-color="purple" style="background-color: #CC44CC;" title="Purple"></button>
+							<button class="color-swatch" data-color="red" style="background-color: #880000;" title="Red"></button>
+							<button class="color-swatch" data-color="brown" style="background-color: #664400;" title="Brown"></button>
+							<button class="color-swatch" data-color="orange" style="background-color: #DD8855;" title="Orange"></button>
+							<button class="color-swatch" data-color="light-red" style="background-color: #FF7777;" title="Light Red"></button>
+							<button class="color-swatch" data-color="green" style="background-color: #00CC55;" title="Green"></button>
+							<button class="color-swatch" data-color="light-green" style="background-color: #AAFF66;" title="Light Green"></button>
+							<button class="color-swatch" data-color="yellow" style="background-color: #EEEE77;" title="Yellow"></button>
+						</div>
+					</div>
+
+					<div class="color-group">
+						<label class="form-label">Background Color</label>
+						<div class="color-palette">
+							<button class="color-swatch" data-color="black" style="background-color: #000000;" title="Black"></button>
+							<button class="color-swatch" data-color="gray-1" style="background-color: #333333;" title="Dark Gray"></button>
+							<button class="color-swatch" data-color="gray-2" style="background-color: #777777;" title="Gray"></button>
+							<button class="color-swatch" data-color="gray-3" style="background-color: #BBBBBB;" title="Light Gray"></button>
+							<button class="color-swatch" data-color="white" style="background-color: #FFFFFF;" title="White"></button>
+							<button class="color-swatch" data-color="cyan" style="background-color: #AAFFEE;" title="Cyan"></button>
+							<button class="color-swatch" data-color="light-blue" style="background-color: #0088FF;" title="Light Blue"></button>
+							<button class="color-swatch" data-color="blue" style="background-color: #0000AA;" title="Blue"></button>
+							<button class="color-swatch" data-color="purple" style="background-color: #CC44CC;" title="Purple"></button>
+							<button class="color-swatch" data-color="red" style="background-color: #880000;" title="Red"></button>
+							<button class="color-swatch" data-color="brown" style="background-color: #664400;" title="Brown"></button>
+							<button class="color-swatch" data-color="orange" style="background-color: #DD8855;" title="Orange"></button>
+							<button class="color-swatch" data-color="light-red" style="background-color: #FF7777;" title="Light Red"></button>
+							<button class="color-swatch" data-color="green" style="background-color: #00CC55;" title="Green"></button>
+							<button class="color-swatch" data-color="light-green" style="background-color: #AAFF66;" title="Light Green"></button>
+							<button class="color-swatch" data-color="yellow" style="background-color: #EEEE77;" title="Yellow"></button>
+						</div>
+					</div>
+				</section>
+			</div>
 		</div>
-	</div>
 
-	<div id="edit-box">
-		<label for="rom-line-1">Line 1:</label> <input type="text" id="rom-line-1" size="36">
-		<br>
-		<label for="rom-line-2">Line 2:</label> <input type="text" id="rom-line-2" size="17">
-
-		<br>
-		<br>
-
-		Border color:
-		<table>
-			<tr>
-				<td id="color-black">&nbsp;</td>
-				<td id="color-gray-1">&nbsp;</td>
-				<td id="color-gray-2">&nbsp;</td>
-				<td id="color-gray-3">&nbsp;</td>
-				<td id="color-white">&nbsp;</td>
-				<td id="color-cyan">&nbsp;</td>
-				<td id="color-light-blue">&nbsp;</td>
-				<td id="color-blue">&nbsp;</td>
-				<td id="color-purple">&nbsp;</td>
-				<td id="color-red">&nbsp;</td>
-				<td id="color-brown">&nbsp;</td>
-				<td id="color-orange">&nbsp;</td>
-				<td id="color-light-red">&nbsp;</td>
-				<td id="color-green">&nbsp;</td>
-				<td id="color-light-green">&nbsp;</td>
-				<td id="color-yellow">&nbsp;</td>
-			</tr>
-		</table>
-
-		<br>
-		Main background color:
-		<table>
-			<tr>
-				<td id="color-black">&nbsp;</td>
-				<td id="color-gray-1">&nbsp;</td>
-				<td id="color-gray-2">&nbsp;</td>
-				<td id="color-gray-3">&nbsp;</td>
-				<td id="color-white">&nbsp;</td>
-				<td id="color-cyan">&nbsp;</td>
-				<td id="color-light-blue">&nbsp;</td>
-				<td id="color-blue">&nbsp;</td>
-				<td id="color-purple">&nbsp;</td>
-				<td id="color-red">&nbsp;</td>
-				<td id="color-brown">&nbsp;</td>
-				<td id="color-orange">&nbsp;</td>
-				<td id="color-light-red">&nbsp;</td>
-				<td id="color-green">&nbsp;</td>
-				<td id="color-light-green">&nbsp;</td>
-				<td id="color-yellow">&nbsp;</td>
-			</tr>
-		</table>
+		<footer class="footer">
+			<p>Made with ❤️ for retro computing enthusiasts</p>
+		</footer>
 	</div>
 </body>
 </html>

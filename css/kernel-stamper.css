@@ -1,45 +1,374 @@
-@font-face {
-	 font-family: "C64 Pro Mono Local";
-	 src: url("fonts/C64_Pro_Mono-STYLE.woff") format("woff");
+/* CSS Reset and Variables */
+:root {
+	--primary-color: #0088FF;
+	--secondary-color: #0000AA;
+	--background: #0f1419;
+	--surface: #1a1f2e;
+	--surface-light: #242b3d;
+	--text-primary: #e4e7eb;
+	--text-secondary: #8b92a6;
+	--border-color: #2d3548;
+	--shadow: rgba(0, 0, 0, 0.3);
+	--radius: 12px;
+	--transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-div#c64-screen {
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+@font-face {
+	font-family: "C64 Pro Mono Local";
+	src: url("fonts/C64_Pro_Mono-STYLE.woff") format("woff");
+}
+
+/* Base Styles */
+body {
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+	background: linear-gradient(135deg, #0f1419 0%, #1a1f2e 100%);
+	color: var(--text-primary);
+	line-height: 1.6;
+	min-height: 100vh;
+	padding: 2rem 1rem;
+}
+
+.container {
+	max-width: 1400px;
+	margin: 0 auto;
+}
+
+/* Header */
+.header {
+	text-align: center;
+	margin-bottom: 3rem;
+	animation: fadeInDown 0.6s ease-out;
+}
+
+.header h1 {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-bottom: 0.5rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 1rem;
+	color: var(--text-primary);
+}
+
+.logo-icon {
+	width: 48px;
+	height: 48px;
+	color: var(--primary-color);
+}
+
+.subtitle {
+	color: var(--text-secondary);
+	font-size: 1.125rem;
+}
+
+/* Card Component */
+.card {
+	background: var(--surface);
+	border-radius: var(--radius);
+	padding: 2rem;
+	box-shadow: 0 8px 24px var(--shadow);
+	border: 1px solid var(--border-color);
+	transition: var(--transition);
+}
+
+.card:hover {
+	box-shadow: 0 12px 32px var(--shadow);
+	transform: translateY(-2px);
+}
+
+/* Upload Section */
+.upload-section {
+	margin-bottom: 2rem;
+	animation: fadeIn 0.6s ease-out 0.2s backwards;
+}
+
+.upload-area {
+	position: relative;
+}
+
+#file-input {
+	position: absolute;
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+
+.upload-label {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 3rem 2rem;
+	border: 2px dashed var(--border-color);
+	border-radius: var(--radius);
+	cursor: pointer;
+	transition: var(--transition);
+	background: var(--surface-light);
+}
+
+.upload-label:hover {
+	border-color: var(--primary-color);
+	background: rgba(0, 136, 255, 0.05);
+}
+
+.upload-icon {
+	width: 48px;
+	height: 48px;
+	color: var(--primary-color);
+	margin-bottom: 1rem;
+}
+
+.upload-text {
+	font-size: 1.125rem;
+	font-weight: 600;
+	color: var(--text-primary);
+	margin-bottom: 0.25rem;
+}
+
+.upload-hint {
+	font-size: 0.875rem;
+	color: var(--text-secondary);
+}
+
+/* Main Content Grid */
+.main-content {
+	animation: fadeIn 0.6s ease-out 0.4s backwards;
+}
+
+.editor-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 2rem;
+}
+
+@media (max-width: 1024px) {
+	.editor-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* Section Titles */
+.section-title {
+	font-size: 1.5rem;
+	font-weight: 600;
+	margin-bottom: 1.5rem;
+	color: var(--text-primary);
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.section-title::before {
+	content: '';
+	width: 4px;
+	height: 24px;
+	background: var(--primary-color);
+	border-radius: 2px;
+}
+
+/* C64 Screen Preview */
+#c64-screen {
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 textarea {
-	font: normal 14px "C64 Pro Mono Local", verdana, helvetica, sans-serif;
+	font: normal 14px "C64 Pro Mono Local", Monaco, Consolas, monospace;
 	resize: none;
 	border: 40px solid;
-
-	/* These are the most interesting bits */
-	border-color: #0088FF; /* C64 border color */
-	background-color: #0000AA; /* C64 main screen */
-	color: #0088FF; /* C64 text color */
+	border-color: var(--primary-color);
+	background-color: var(--secondary-color);
+	color: var(--primary-color);
+	border-radius: 8px;
+	box-shadow: 
+		0 0 0 2px var(--surface-light),
+		0 8px 32px rgba(0, 136, 255, 0.2),
+		inset 0 0 40px rgba(0, 0, 0, 0.5);
+	transition: var(--transition);
+	width: 100%;
 }
 
-input[type="text"] {
-	font: normal 14px "C64 Pro Mono Local", verdana, helvetica, sans-serif;
-	padding: 10px;
-	background-color: #0000AA; /* C64 main screen */
-	color: #0088FF; /* C64 text color */	
+textarea:focus {
+	outline: none;
+	box-shadow: 
+		0 0 0 2px var(--surface-light),
+		0 0 0 4px var(--primary-color),
+		0 8px 32px rgba(0, 136, 255, 0.4),
+		inset 0 0 40px rgba(0, 0, 0, 0.5);
 }
 
+/* Form Controls */
+.form-group {
+	margin-bottom: 1.5rem;
+}
 
+.form-label {
+	display: block;
+	font-weight: 500;
+	margin-bottom: 0.5rem;
+	color: var(--text-primary);
+	font-size: 0.875rem;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
 
-td { width: 50px; height: 50px;}
-td#color-black { background-color: #000000; }
-td#color-gray-1 { background-color: #333333; }
-td#color-gray-2 { background-color: #777777; }
-td#color-gray-3 { background-color: #BBBBBB; }
-td#color-white { background-color: #FFFFFF; }
-td#color-red { background-color: #880000; }
-td#color-cyan { background-color: #AAFFEE; }
-td#color-purple { background-color: #CC44CC; }
-td#color-green { background-color: #00CC55; }
-td#color-blue { background-color: #0000AA; }
-td#color-yellow { background-color: #EEEE77; }
-td#color-orange { background-color: #DD8855; }
-td#color-brown { background-color: #664400; }
-td#color-light-red { background-color: #FF7777; }
-td#color-light-green { background-color: #AAFF66; }
-td#color-light-blue { background-color: #0088FF; }
+.form-input {
+	width: 100%;
+	padding: 0.75rem 1rem;
+	font: normal 14px "C64 Pro Mono Local", Monaco, Consolas, monospace;
+	background-color: var(--surface-light);
+	border: 2px solid var(--border-color);
+	border-radius: 8px;
+	color: var(--text-primary);
+	transition: var(--transition);
+}
+
+.form-input:focus {
+	outline: none;
+	border-color: var(--primary-color);
+	background-color: var(--surface);
+	box-shadow: 0 0 0 3px rgba(0, 136, 255, 0.1);
+}
+
+.form-input::placeholder {
+	color: var(--text-secondary);
+}
+
+/* Color Palette */
+.color-group {
+	margin-bottom: 2rem;
+}
+
+.color-palette {
+	display: grid;
+	grid-template-columns: repeat(8, 1fr);
+	gap: 0.5rem;
+}
+
+.color-swatch {
+	width: 100%;
+	aspect-ratio: 1;
+	border: 3px solid var(--border-color);
+	border-radius: 8px;
+	cursor: pointer;
+	transition: var(--transition);
+	position: relative;
+}
+
+.color-swatch:hover {
+	transform: scale(1.1);
+	border-color: var(--text-primary);
+	box-shadow: 0 4px 12px var(--shadow);
+	z-index: 1;
+}
+
+.color-swatch:active {
+	transform: scale(0.95);
+}
+
+.color-swatch.selected {
+	border-color: var(--primary-color);
+	border-width: 4px;
+	box-shadow: 
+		0 0 0 2px var(--surface),
+		0 0 0 4px var(--primary-color),
+		0 4px 12px rgba(0, 136, 255, 0.4);
+}
+
+.color-swatch.selected::after {
+	content: '✓';
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	color: white;
+	font-size: 1.25rem;
+	font-weight: bold;
+	text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Footer */
+.footer {
+	text-align: center;
+	margin-top: 3rem;
+	padding-top: 2rem;
+	border-top: 1px solid var(--border-color);
+	color: var(--text-secondary);
+	animation: fadeIn 0.6s ease-out 0.6s backwards;
+}
+
+/* Animations */
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes fadeInDown {
+	from {
+		opacity: 0;
+		transform: translateY(-20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+	body {
+		padding: 1rem;
+	}
+
+	.header h1 {
+		font-size: 1.75rem;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.logo-icon {
+		width: 36px;
+		height: 36px;
+	}
+
+	.card {
+		padding: 1.5rem;
+	}
+
+	.color-palette {
+		grid-template-columns: repeat(4, 1fr);
+	}
+
+	textarea {
+		border-width: 20px;
+	}
+}
+
+@media (max-width: 480px) {
+	.header h1 {
+		font-size: 1.5rem;
+	}
+
+	.subtitle {
+		font-size: 1rem;
+	}
+
+	.color-palette {
+		grid-template-columns: repeat(4, 1fr);
+		gap: 0.375rem;
+	}
+}
