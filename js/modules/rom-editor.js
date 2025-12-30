@@ -15,6 +15,9 @@ let currentRomState = {
 let originalLine1 = '';
 let originalLine2 = '';
 
+// Store keyboard listener reference for cleanup
+let keyboardListener = null;
+
 const colors = [
     "000000", "FFFFFF", "880000", "AAFFEE", "CC44CC", "00CC55", "0000AA", "EEEE77",
     "DD8855", "664400", "FF7777", "333333", "777777", "AAFF66", "0088FF", "BBBBBB"
@@ -455,8 +458,12 @@ export function setupEditorListeners() {
         redoBtn.addEventListener('click', performRedo);
     }
     
-    // Keyboard shortcuts
-    document.addEventListener('keydown', (e) => {
+    // Keyboard shortcuts - Remove existing listener before adding new one
+    if (keyboardListener) {
+        document.removeEventListener('keydown', keyboardListener);
+    }
+    
+    keyboardListener = (e) => {
         if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
             e.preventDefault();
             performUndo();
@@ -464,5 +471,7 @@ export function setupEditorListeners() {
             e.preventDefault();
             performRedo();
         }
-    });
+    };
+    
+    document.addEventListener('keydown', keyboardListener);
 }
