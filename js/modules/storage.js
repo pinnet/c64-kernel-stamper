@@ -131,11 +131,14 @@ export function addHistoryEntry(romId, changeType, changeData, previousState) {
         const historyKey = getHistoryKey(romId);
         const historyJson = localStorage.getItem(historyKey);
         
+        let history;
         if (!historyJson) {
             initializeRomHistory(romId);
+            // Re-read after initialization
+            history = JSON.parse(localStorage.getItem(historyKey));
+        } else {
+            history = JSON.parse(historyJson);
         }
-        
-        const history = JSON.parse(localStorage.getItem(historyKey));
         
         // Remove any redo history if we're not at the end
         if (history.currentIndex < history.changes.length - 1) {
