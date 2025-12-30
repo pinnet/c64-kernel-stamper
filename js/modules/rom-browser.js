@@ -1,6 +1,6 @@
 // ROM Browser UI Module
 
-import { getRomsFromStorage, deleteRomFromStorage, getRomById, renameRom } from './storage.js';
+import { getRomsFromStorage, deleteRomFromStorage, getRomById, renameRom, getChildRoms, isOriginalRom } from './storage.js';
 import { processRomFile } from './rom-processor.js';
 import { saveChangesToRom, getCurrentRomId, updateBorderColor, updateBackgroundColor, updateTextColor } from './rom-editor.js';
 
@@ -67,35 +67,54 @@ export function loadRomBrowser() {
     
     romList.innerHTML = '';
     
-    romIds.forEach(romId => {
-        const rom = roms[romId];
-        const romItem = createRomItem(rom);
-        romList.appendChild(romItem);
+    // Get only parent (original) ROMs
+    const parentRoms = romIds
+        .map(id => roms[id])
+        .filter(rom => rom.metadata?.isOriginal === true);
+    
+    // Build tree structure for each parent
+    parentRoms.forEach(parentRom => {
+        const parentItem = createRomItem(parentRom, 0);
+        romList.appendChild(parentItem);
+        
+        // Get and display children
+        const children = getChildRoms(parentRom.id);
+        children.forEach(childRom => {
+            const childItem = createRomItem(childRom, 1);
+            romList.appendChild(childItem);
+        });
     });
 }
 
-function createRomItem(rom) {
+function createRomItem(rom, level = 0) {
     const item = document.createElement('div');
     item.className = 'rom-item';
+    if (level > 0) {
+        item.classList.add('rom-item-child');
+    }
     item.dataset.romId = rom.id;
+    item.dataset.level = level;
     
     const sizeKB = (rom.size / 1024).toFixed(2);
     const uploadDate = new Date(rom.uploadDate).toLocaleDateString();
     const changeCount = rom.metadata?.changeCount || 0;
+    const isOriginal = rom.metadata?.isOriginal === true;
+    const treeIndent = level > 0 ? '└─ ' : '';
     
     item.innerHTML = `
         <div class="rom-item-info" data-rom-id="${rom.id}">
+            ${level > 0 ? '<span class="tree-indent">└─</span>' : ''}
             <svg class="rom-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
                 <polyline points="13 2 13 9 20 9"></polyline>
             </svg>
             <div class="rom-details">
-                <div class="rom-name">${escapeHtml(rom.name)}</div>
+                <div class="rom-name">${escapeHtml(rom.name)}${isOriginal ? ' <span class="original-badge">Original</span>' : ''}</div>
                 <div class="rom-meta">${sizeKB} KB • ${uploadDate} • ${changeCount} edit${changeCount !== 1 ? 's' : ''}</div>
             </div>
         </div>
         <div class="rom-actions">
-            <button class="rom-btn rom-btn-rename" data-action="rename" data-rom-id="${rom.id}" title="Rename">
+            <button class="rom-btn rom-btn-rename" data-action="rename" data-rom-id="${rom.id}" title="${isOriginal ? 'Cannot rename original' : 'Rename'}" ${isOriginal ? 'disabled' : ''}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>

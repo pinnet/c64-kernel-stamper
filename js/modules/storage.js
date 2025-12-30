@@ -1,6 +1,6 @@
 // Local Storage Management Module
 
-export function saveRomToStorage(fileName, fileData, fileSize) {
+export function saveRomToStorage(fileName, fileData, fileSize, parentId = null) {
     try {
         const roms = getRomsFromStorage();
         const romId = Date.now().toString();
@@ -15,7 +15,9 @@ export function saveRomToStorage(fileName, fileData, fileSize) {
             metadata: {
                 version: '1.0',
                 originalName: fileName,
-                changeCount: 0
+                changeCount: 0,
+                parentId: parentId,  // null for original uploads
+                isOriginal: parentId === null  // true for original uploads
             }
         };
         
@@ -56,6 +58,16 @@ export function deleteRomFromStorage(romId) {
 export function getRomById(romId) {
     const roms = getRomsFromStorage();
     return roms[romId];
+}
+
+export function getChildRoms(parentId) {
+    const roms = getRomsFromStorage();
+    return Object.values(roms).filter(rom => rom.metadata?.parentId === parentId);
+}
+
+export function isOriginalRom(romId) {
+    const rom = getRomById(romId);
+    return rom?.metadata?.isOriginal === true;
 }
 
 export function updateRomMetadata(romId, updates) {
@@ -100,6 +112,12 @@ export function renameRom(romId, newName) {
     const rom = roms[romId];
     
     if (rom) {
+        // Prevent renaming original uploaded files
+        if (rom.metadata?.isOriginal === true) {
+            alert('Cannot rename original uploaded ROM. Create a child version to rename.');
+            return false;
+        }
+        
         rom.name = newName;
         rom.lastModified = new Date().toISOString();
         localStorage.setItem('c64-roms', JSON.stringify(roms));
