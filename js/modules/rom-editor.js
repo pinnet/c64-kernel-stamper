@@ -11,6 +11,10 @@ let currentRomState = {
     textColor: 14
 };
 
+// Track original values for change detection
+let originalLine1 = '';
+let originalLine2 = '';
+
 const colors = [
     "000000", "FFFFFF", "880000", "AAFFEE", "CC44CC", "00CC55", "0000AA", "EEEE77",
     "DD8855", "664400", "FF7777", "333333", "777777", "AAFF66", "0088FF", "BBBBBB"
@@ -35,6 +39,9 @@ export function resetEditorState() {
         textColor: 14
     };
     
+    originalLine1 = '';
+    originalLine2 = '';
+    
     // Clear form inputs
     const line1Input = document.getElementById('rom-line-1');
     const line2Input = document.getElementById('rom-line-2');
@@ -54,6 +61,8 @@ export function resetEditorState() {
 
 export function setCurrentRomState(state) {
     currentRomState = { ...state };
+    originalLine1 = state.line1;
+    originalLine2 = state.line2;
 }
 
 export function getCurrentRomState() {
@@ -66,10 +75,15 @@ export function updateLine1(newValue) {
     const previousState = getCurrentRomState();
     currentRomState.line1 = newValue;
     
-    addHistoryEntry(currentRomId, 'line1-change', {
-        newValue: newValue,
-        oldValue: previousState.line1
-    }, previousState);
+    // Only add history if value actually changed from original
+    if (newValue !== originalLine1) {
+        addHistoryEntry(currentRomId, 'line1-change', {
+            newValue: newValue,
+            oldValue: originalLine1
+        }, previousState);
+        
+        originalLine1 = newValue;
+    }
     
     updatePreview();
     updateHistoryUI();
@@ -81,13 +95,29 @@ export function updateLine2(newValue) {
     const previousState = getCurrentRomState();
     currentRomState.line2 = newValue;
     
-    addHistoryEntry(currentRomId, 'line2-change', {
-        newValue: newValue,
-        oldValue: previousState.line2
-    }, previousState);
+    // Only add history if value actually changed from original
+    if (newValue !== originalLine2) {
+        addHistoryEntry(currentRomId, 'line2-change', {
+            newValue: newValue,
+            oldValue: originalLine2
+        }, previousState);
+        
+        originalLine2 = newValue;
+    }
     
     updatePreview();
     updateHistoryUI();
+}
+
+// Live preview update without history tracking
+function updateLine1Preview(newValue) {
+    currentRomState.line1 = newValue;
+    updatePreview();
+}
+
+function updateLine2Preview(newValue) {
+    currentRomState.line2 = newValue;
+    updatePreview();
 }
 
 export function updateBorderColor(colorIndex) {
@@ -363,13 +393,25 @@ export function setupEditorListeners() {
     // Line 1 input
     const line1Input = document.getElementById('rom-line-1');
     if (line1Input) {
+        // Live preview on input (no history)
         line1Input.addEventListener('input', (e) => {
-            updateLine1(e.target.value);
+            updateLine1Preview(e.target.value);
         });
         
+        // Create history entry on blur (when field loses focus)
+        line1Input.addEventListener('blur', (e) => {
+            if (e.target.value !== originalLine1) {
+                updateLine1(e.target.value);
+            }
+        });
+        
+        // Save on Enter
         line1Input.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
+                if (e.target.value !== originalLine1) {
+                    updateLine1(e.target.value);
+                }
                 saveChangesToRom();
             }
         });
@@ -378,13 +420,25 @@ export function setupEditorListeners() {
     // Line 2 input
     const line2Input = document.getElementById('rom-line-2');
     if (line2Input) {
+        // Live preview on input (no history)
         line2Input.addEventListener('input', (e) => {
-            updateLine2(e.target.value);
+            updateLine2Preview(e.target.value);
         });
         
+        // Create history entry on blur (when field loses focus)
+        line2Input.addEventListener('blur', (e) => {
+            if (e.target.value !== originalLine2) {
+                updateLine2(e.target.value);
+            }
+        });
+        
+        // Save on Enter
         line2Input.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
+                if (e.target.value !== originalLine2) {
+                    updateLine2(e.target.value);
+                }
                 saveChangesToRom();
             }
         });
