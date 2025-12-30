@@ -1,0 +1,5 @@
+# C64 Pro Font Files
+css/fonts/C64_Pro*
+
+# Keep the readme
+!css/fonts/readme.md
