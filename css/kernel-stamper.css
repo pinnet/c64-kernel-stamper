@@ -190,7 +190,7 @@ body {
 
 .editor-grid {
 	display: grid;
-	grid-template-columns: 1fr 1fr;
+	grid-template-columns: 720px 1fr;
 	gap: 2rem;
 }
 
@@ -333,6 +333,10 @@ textarea {
 	border-radius: 8px;
 	transition: var(--transition);
 	width: 100%;
+	overflow-x: hidden;
+	white-space: pre;
+	word-wrap: normal;
+	padding-top: 1rem;
 }
 
 textarea:focus {

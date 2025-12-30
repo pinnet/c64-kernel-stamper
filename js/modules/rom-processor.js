@@ -118,7 +118,11 @@ export function processRomFile(romFile, fileName, romId = null) {
 function drawScreen(line1, line2, borderColor, backgroundColor, textColor) {
     const textarea = document.getElementById("c64-screen-text");
 
-    textarea.value = "\r" + line1 + line2 + "38911 BASIC BYTES FREE \r\rREADY.\r█";
+    // Limit to 40 columns (C64 hardware constraint) and pad to exactly 40 chars
+    const displayLine1 = line1.substring(0, 40).padEnd(40, ' ');
+    const displayLine2 = line2.substring(0, 17).padEnd(17, ' ');
+    
+    textarea.value = "\r" + displayLine1 + "\r" + displayLine2 + "38911 BASIC BYTES FREE \r\rREADY.\r█";
     textarea.style.borderColor = "#" + colors[borderColor];
     textarea.style.backgroundColor = "#" + colors[backgroundColor];
     textarea.style.color = "#" + colors[textColor];

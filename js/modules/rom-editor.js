@@ -204,7 +204,11 @@ export function updatePreview() {
     const textarea = document.getElementById("c64-screen-text");
     if (!textarea) return;
     
-    textarea.value = "\r" + currentRomState.line1 + currentRomState.line2 + "38911 BASIC BYTES FREE \r\rREADY.\r█";
+    // Limit to 40 columns (C64 hardware constraint) and pad to exactly 40 chars
+    const displayLine1 = currentRomState.line1.substring(0, 40).padEnd(40, ' ');
+    const displayLine2 = currentRomState.line2.substring(0, 17).padEnd(17, ' ');
+    
+    textarea.value = "\r" + displayLine1 + "\r" + displayLine2 + "38911 BASIC BYTES FREE \r\rREADY.\r█";
     applyColors();
 }
 
