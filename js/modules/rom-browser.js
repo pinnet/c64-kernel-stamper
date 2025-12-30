@@ -4,6 +4,13 @@ import { getRomsFromStorage, deleteRomFromStorage, getRomById, renameRom } from 
 import { processRomFile } from './rom-processor.js';
 import { saveChangesToRom, getCurrentRomId, updateBorderColor, updateBackgroundColor, updateTextColor } from './rom-editor.js';
 
+// HTML escape to prevent XSS attacks
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
 export function loadRomBrowser() {
     const romList = document.getElementById('rom-list');
     const roms = getRomsFromStorage();
@@ -39,7 +46,7 @@ function createRomItem(rom) {
                 <polyline points="13 2 13 9 20 9"></polyline>
             </svg>
             <div class="rom-details">
-                <div class="rom-name">${rom.name}</div>
+                <div class="rom-name">${escapeHtml(rom.name)}</div>
                 <div class="rom-meta">${sizeKB} KB • ${uploadDate} • ${changeCount} edit${changeCount !== 1 ? 's' : ''}</div>
             </div>
         </div>
@@ -72,7 +79,7 @@ function createRomItem(rom) {
 export function deleteRomPrompt(romId) {
     const rom = getRomById(romId);
     
-    if (rom && confirm(`Delete "${rom.name}"?`)) {
+    if (rom && confirm(`Delete "${escapeHtml(rom.name)}"?`)) {
         deleteRomFromStorage(romId);
         loadRomBrowser();
     }
