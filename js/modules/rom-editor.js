@@ -1,6 +1,6 @@
 // ROM Editor Module - Handles editing and tracks changes
 
-import { addHistoryEntry, canUndo, canRedo, undo, redo, getHistorySummary } from './storage.js';
+import { addHistoryEntry, canUndo, canRedo, undo, redo, getHistorySummary, getRomById, updateRomData } from './storage.js';
 
 let currentRomId = null;
 let currentRomState = {
@@ -142,6 +142,80 @@ export function applyColors() {
     textarea.style.color = "#" + colors[currentRomState.textColor];
 }
 
+export async function saveChangesToRom() {
+    if (!currentRomId) {
+        console.warn('No ROM loaded');
+        return false;
+    }
+    
+    const rom = getRomById(currentRomId);
+    if (!rom) {
+        console.error('ROM not found');
+        return false;
+    }
+    
+    try {
+        // Convert the base64 data back to a blob
+        const response = await fetch(rom.data);
+        const blob = await response.blob();
+        const arrayBuffer = await blob.arrayBuffer();
+        const uint8Array = new Uint8Array(arrayBuffer);
+        
+        // Update line 1 (bytes 1141-1177, 37 bytes)
+        const line1Bytes = new TextEncoder().encode(currentRomState.line1.padEnd(37, ' '));
+        for (let i = 0; i < 37 && i < line1Bytes.length; i++) {
+            uint8Array[1141 + i] = line1Bytes[i];
+        }
+        
+        // Update line 2 (bytes 1178-1194, 17 bytes)
+        const line2Bytes = new TextEncoder().encode(currentRomState.line2.padEnd(17, ' '));
+        for (let i = 0; i < 17 && i < line2Bytes.length; i++) {
+            uint8Array[1178 + i] = line2Bytes[i];
+        }
+        
+        // Update border color (byte 3289)
+        uint8Array[3289] = currentRomState.borderColor;
+        
+        // Update background color (byte 3290)
+        uint8Array[3290] = currentRomState.backgroundColor;
+        
+        // Update text color (byte 1333)
+        uint8Array[1333] = currentRomState.textColor;
+        
+        // Convert back to base64
+        const newBlob = new Blob([uint8Array]);
+        const reader = new FileReader();
+        
+        return new Promise((resolve) => {
+            reader.onload = function(e) {
+                const success = updateRomData(currentRomId, e.target.result);
+                if (success) {
+                    console.log('ROM data updated in localStorage');
+                    showSaveNotification();
+                }
+                resolve(success);
+            };
+            reader.readAsDataURL(newBlob);
+        });
+    } catch (error) {
+        console.error('Error saving ROM:', error);
+        return false;
+    }
+}
+
+function showSaveNotification() {
+    const historyInfo = document.getElementById('history-info');
+    if (historyInfo) {
+        const originalText = historyInfo.textContent;
+        historyInfo.textContent = 'Saved ✓';
+        historyInfo.style.color = '#00CC55';
+        setTimeout(() => {
+            historyInfo.textContent = originalText;
+            historyInfo.style.color = '';
+        }, 2000);
+    }
+}
+
 export function performUndo() {
     if (!currentRomId || !canUndo(currentRomId)) return;
     
@@ -221,6 +295,13 @@ export function setupEditorListeners() {
         line1Input.addEventListener('input', (e) => {
             updateLine1(e.target.value);
         });
+        
+        line1Input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                saveChangesToRom();
+            }
+        });
     }
     
     // Line 2 input
@@ -228,6 +309,13 @@ export function setupEditorListeners() {
     if (line2Input) {
         line2Input.addEventListener('input', (e) => {
             updateLine2(e.target.value);
+        });
+        
+        line2Input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                saveChangesToRom();
+            }
         });
     }
     

@@ -82,6 +82,19 @@ export function updateRomMetadata(romId, updates) {
     }
 }
 
+export function updateRomData(romId, newData) {
+    const roms = getRomsFromStorage();
+    const rom = roms[romId];
+    
+    if (rom) {
+        rom.data = newData;
+        rom.lastModified = new Date().toISOString();
+        localStorage.setItem('c64-roms', JSON.stringify(roms));
+        return true;
+    }
+    return false;
+}
+
 // History Management Functions
 
 function getHistoryKey(romId) {
