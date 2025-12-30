@@ -2,7 +2,7 @@
 
 import { getRomsFromStorage, deleteRomFromStorage, getRomById, renameRom } from './storage.js';
 import { processRomFile } from './rom-processor.js';
-import { saveChangesToRom, getCurrentRomId } from './rom-editor.js';
+import { saveChangesToRom, getCurrentRomId, updateBorderColor, updateBackgroundColor, updateTextColor } from './rom-editor.js';
 
 export function loadRomBrowser() {
     const romList = document.getElementById('rom-list');
@@ -201,17 +201,11 @@ function setupColorPaletteEvents() {
             
             // Update the appropriate color based on which palette (0=border, 1=background, 2=text)
             if (index === 0) {
-                import('./rom-editor.js').then(module => {
-                    module.updateBorderColor(colorIndex);
-                });
+                updateBorderColor(colorIndex);
             } else if (index === 1) {
-                import('./rom-editor.js').then(module => {
-                    module.updateBackgroundColor(colorIndex);
-                });
+                updateBackgroundColor(colorIndex);
             } else if (index === 2) {
-                import('./rom-editor.js').then(module => {
-                    module.updateTextColor(colorIndex);
-                });
+                updateTextColor(colorIndex);
             }
         });
     });
