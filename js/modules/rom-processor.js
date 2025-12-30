@@ -27,26 +27,55 @@ export function processRomFile(romFile, fileName, romId = null) {
 
     const reader = new FileReader();
 
+    reader.onerror = function() {
+        console.error("Failed to read Line 1 from ROM file");
+        alert("Error reading ROM file: Failed to parse Line 1. The file may be corrupted.");
+    };
+
     reader.onload = function(loadedEvent) {
         parsedLine1 = loadedEvent.target.result;
         console.log("Line 1: [" + parsedLine1 + "]");
 
         const reader2 = new FileReader();
+        
+        reader2.onerror = function() {
+            console.error("Failed to read Line 2 from ROM file");
+            alert("Error reading ROM file: Failed to parse Line 2. The file may be corrupted.");
+        };
+        
         reader2.onload = function(loadedEvent) {
             parsedLine2 = loadedEvent.target.result;
             console.log("Line 2: [" + parsedLine2 + "]");
 
             const reader3 = new FileReader();
+            
+            reader3.onerror = function() {
+                console.error("Failed to read Border Color from ROM file");
+                alert("Error reading ROM file: Failed to parse Border Color. The file may be corrupted.");
+            };
+            
             reader3.onload = function(loadedEvent) {
                 parsedBorderColor = loadedEvent.target.result.charCodeAt();
                 console.log("Border color from ROM: " + parsedBorderColor);
 
                 const reader4 = new FileReader();
+                
+                reader4.onerror = function() {
+                    console.error("Failed to read Background Color from ROM file");
+                    alert("Error reading ROM file: Failed to parse Background Color. The file may be corrupted.");
+                };
+                
                 reader4.onload = function(loadedEvent) {
                     parsedBackgroundColor = loadedEvent.target.result.charCodeAt();
                     console.log("Background color from ROM: " + parsedBackgroundColor);
 
                     const reader5 = new FileReader();
+                    
+                    reader5.onerror = function() {
+                        console.error("Failed to read Text Color from ROM file");
+                        alert("Error reading ROM file: Failed to parse Text Color. The file may be corrupted.");
+                    };
+                    
                     reader5.onload = function(loadedEvent) {
                         parsedTextColor = loadedEvent.target.result.charCodeAt();
                         console.log("Text color from ROM: " + parsedTextColor);
