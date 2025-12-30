@@ -2,6 +2,7 @@
 
 import { getRomsFromStorage, deleteRomFromStorage, getRomById } from './storage.js';
 import { processRomFile } from './rom-processor.js';
+import { saveChangesToRom, getCurrentRomId } from './rom-editor.js';
 
 export function loadRomBrowser() {
     const romList = document.getElementById('rom-list');
@@ -72,6 +73,19 @@ export function deleteRomPrompt(romId) {
 }
 
 export function downloadRom(romId) {
+    const currentRom = getCurrentRomId();
+    
+    // If downloading the currently edited ROM, save changes first
+    if (currentRom === romId) {
+        saveChangesToRom().then(() => {
+            performDownload(romId);
+        });
+    } else {
+        performDownload(romId);
+    }
+}
+
+function performDownload(romId) {
     const rom = getRomById(romId);
     
     if (rom) {
@@ -128,4 +142,65 @@ export function setupRomBrowserEvents() {
             loadRomFromStorage(romId);
         }
     });
+    
+    // Setup color palette click handlers
+    setupColorPaletteEvents();
+}
+
+function setupColorPaletteEvents() {
+    const colorGroups = document.querySelectorAll('.color-group');
+    
+    colorGroups.forEach((group, index) => {
+        const palette = group.querySelector('.color-palette');
+        if (!palette) return;
+        
+        palette.addEventListener('click', (e) => {
+            const swatch = e.target.closest('.color-swatch');
+            if (!swatch) return;
+            
+            const colorName = swatch.dataset.color;
+            const colorIndex = getColorIndex(colorName);
+            
+            // Remove active from all swatches in this palette
+            palette.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+            swatch.classList.add('selected');
+            
+            // Update the appropriate color based on which palette (0=border, 1=background, 2=text)
+            if (index === 0) {
+                import('./rom-editor.js').then(module => {
+                    module.updateBorderColor(colorIndex);
+                });
+            } else if (index === 1) {
+                import('./rom-editor.js').then(module => {
+                    module.updateBackgroundColor(colorIndex);
+                });
+            } else if (index === 2) {
+                import('./rom-editor.js').then(module => {
+                    module.updateTextColor(colorIndex);
+                });
+            }
+        });
+    });
+}
+
+function getColorIndex(colorName) {
+    const colorMap = {
+        'black': 0,
+        'white': 1,
+        'red': 2,
+        'cyan': 3,
+        'purple': 4,
+        'green': 5,
+        'blue': 6,
+        'yellow': 7,
+        'orange': 8,
+        'brown': 9,
+        'light-red': 10,
+        'gray-1': 11,
+        'gray-2': 12,
+        'light-green': 13,
+        'light-blue': 14,
+        'gray-3': 15
+    };
+    return colorMap[colorName] || 0;
 }

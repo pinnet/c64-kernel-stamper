@@ -295,21 +295,12 @@ textarea {
 	background-color: var(--secondary-color);
 	color: var(--primary-color);
 	border-radius: 8px;
-	box-shadow: 
-		0 0 0 2px var(--surface-light),
-		0 8px 32px rgba(0, 136, 255, 0.2),
-		inset 0 0 40px rgba(0, 0, 0, 0.5);
 	transition: var(--transition);
 	width: 100%;
 }
 
 textarea:focus {
 	outline: none;
-	box-shadow: 
-		0 0 0 2px var(--surface-light),
-		0 0 0 4px var(--primary-color),
-		0 8px 32px rgba(0, 136, 255, 0.4),
-		inset 0 0 40px rgba(0, 0, 0, 0.5);
 }
 
 /* Form Controls */
