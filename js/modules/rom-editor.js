@@ -76,7 +76,10 @@ export function resetEditorState() {
     
     if (undoBtn) undoBtn.disabled = true;
     if (redoBtn) redoBtn.disabled = true;
-    if (historyInfo) historyInfo.textContent = '0 changes';
+    if (historyInfo) {
+        historyInfo.textContent = '0 changes';
+        historyInfo.style.display = 'block';
+    }
 }
 
 export function setCurrentRomState(state) {
@@ -86,6 +89,13 @@ export function setCurrentRomState(state) {
     
     // Update color palette selections to reflect loaded ROM colors
     updateColorPaletteSelections();
+    
+    // Hide change counter for original ROMs
+    const isOriginal = isOriginalRom(currentRomId);
+    const historyInfo = document.getElementById('history-info');
+    if (historyInfo) {
+        historyInfo.style.display = isOriginal ? 'none' : 'block';
+    }
 }
 
 export function getCurrentRomState() {
@@ -192,23 +202,52 @@ export function updateTextColor(colorIndex) {
 }
 
 export function applyColors() {
-    const textarea = document.getElementById("c64-screen-text");
-    if (!textarea) return;
+    const screen = document.getElementById("c64-screen-text");
+    if (!screen) return;
     
-    textarea.style.borderColor = "#" + colors[currentRomState.borderColor];
-    textarea.style.backgroundColor = "#" + colors[currentRomState.backgroundColor];
-    textarea.style.color = "#" + colors[currentRomState.textColor];
+    screen.style.borderColor = "#" + colors[currentRomState.borderColor];
+    screen.style.backgroundColor = "#" + colors[currentRomState.backgroundColor];
+    screen.style.color = "#" + colors[currentRomState.textColor];
 }
 
 export function updatePreview() {
     const textarea = document.getElementById("c64-screen-text");
     if (!textarea) return;
     
-    // Limit to 40 columns (C64 hardware constraint) and pad to exactly 40 chars
+    // Generate exactly 22 lines, each 40 characters wide
+    const emptyLine = ''.padEnd(40, ' ');
     const displayLine1 = currentRomState.line1.substring(0, 40).padEnd(40, ' ');
-    const displayLine2 = currentRomState.line2.substring(0, 17).padEnd(17, ' ');
+    const line2Part = currentRomState.line2.substring(0, 17).padEnd(17, ' ');
+    const displayLine2 = (line2Part + '38911 BASIC BYTES FREE').padEnd(40, ' ');
+    const readyLine = 'READY.'.padEnd(40, ' ');
+    const cursorLine = '█'.padEnd(40, ' ');
     
-    textarea.value = "\r" + displayLine1 + "\r" + displayLine2 + "38911 BASIC BYTES FREE \r\rREADY.\r█";
+    const lines = [
+        emptyLine,        // Line 1
+        displayLine1,     // Line 2
+        emptyLine,        // Line 3 (blank line)
+        displayLine2,     // Line 4
+        emptyLine,        // Line 5
+        readyLine,        // Line 6
+        cursorLine,       // Line 7
+        emptyLine,        // Line 8
+        emptyLine,        // Line 9
+        emptyLine,        // Line 10
+        emptyLine,        // Line 11
+        emptyLine,        // Line 12
+        emptyLine,        // Line 13
+        emptyLine,        // Line 14
+        emptyLine,        // Line 15
+        emptyLine,        // Line 16
+        emptyLine,        // Line 17
+        emptyLine,        // Line 18
+        emptyLine,        // Line 19
+        emptyLine,        // Line 20
+        emptyLine,        // Line 21
+        emptyLine         // Line 22
+    ];
+    
+    textarea.textContent = lines.join('\n');
     applyColors();
 }
 

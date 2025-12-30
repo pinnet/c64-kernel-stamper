@@ -74,17 +74,26 @@
 
 			<div class="editor-grid">
 				<section class="preview-section card">
-					<h2 class="section-title">Preview</h2>
+					<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+						<h2 class="section-title" style="margin-bottom: 0;">Preview</h2>
+						<button id="debug-whitespace-btn" class="debug-btn" title="Toggle whitespace visibility">
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+								<circle cx="12" cy="12" r="1"></circle>
+								<circle cx="6" cy="12" r="1"></circle>
+								<circle cx="18" cy="12" r="1"></circle>
+							</svg>
+							Debug
+						</button>
+					</div>
 					<div id="c64-screen">
-						<textarea id="c64-screen-text" cols="40" rows="25" spellcheck="false">
+						<pre id="c64-screen-text">
 
   **** COMMODORE 64 KERNEL STAMPER ****
 
  UPLOAD KERNEL ROM FILE ↑ TO GET STARTED
 
 READY.
-█
-</textarea>
+█</pre>
 					</div>
 				</section>
 

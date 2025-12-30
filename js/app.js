@@ -29,8 +29,18 @@ function init() {
             fileInput.click();
         });
     }
-    
-    // Setup save changes button
+
+// Debug whitespace button
+const debugBtn = document.getElementById('debug-whitespace-btn');
+if (debugBtn) {
+    debugBtn.addEventListener('click', () => {
+        const preview = document.getElementById('c64-screen-text');
+        if (preview) {
+            preview.classList.toggle('debug-whitespace');
+            debugBtn.classList.toggle('active');
+        }
+    });
+}
     const saveChangesBtn = document.getElementById('save-changes-btn');
     if (saveChangesBtn) {
         saveChangesBtn.addEventListener('click', () => {
