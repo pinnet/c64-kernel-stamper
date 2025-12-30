@@ -1,6 +1,6 @@
 // ROM Browser UI Module
 
-import { getRomsFromStorage, deleteRomFromStorage, getRomById } from './storage.js';
+import { getRomsFromStorage, deleteRomFromStorage, getRomById, renameRom } from './storage.js';
 import { processRomFile } from './rom-processor.js';
 import { saveChangesToRom, getCurrentRomId } from './rom-editor.js';
 
@@ -44,6 +44,12 @@ function createRomItem(rom) {
             </div>
         </div>
         <div class="rom-actions">
+            <button class="rom-btn rom-btn-rename" data-action="rename" data-rom-id="${rom.id}" title="Rename">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+            </button>
             <button class="rom-btn rom-btn-download" data-action="download" data-rom-id="${rom.id}" title="Download">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -69,6 +75,32 @@ export function deleteRomPrompt(romId) {
     if (rom && confirm(`Delete "${rom.name}"?`)) {
         deleteRomFromStorage(romId);
         loadRomBrowser();
+    }
+}
+
+export function renameRomPrompt(romId) {
+    const rom = getRomById(romId);
+    
+    if (rom) {
+        const newName = prompt('Enter new name:', rom.name);
+        
+        if (newName && newName.trim() !== '' && newName !== rom.name) {
+            const success = renameRom(romId, newName.trim());
+            if (success) {
+                loadRomBrowser();
+                
+                // If this is the currently loaded ROM, keep it selected
+                const currentRom = getCurrentRomId();
+                if (currentRom === romId) {
+                    setTimeout(() => {
+                        const item = document.querySelector(`[data-rom-id="${romId}"]`);
+                        if (item) {
+                            item.closest('.rom-item').classList.add('active');
+                        }
+                    }, 50);
+                }
+            }
+        }
     }
 }
 
@@ -136,6 +168,8 @@ export function setupRomBrowserEvents() {
                 deleteRomPrompt(romId);
             } else if (action === 'download') {
                 downloadRom(romId);
+            } else if (action === 'rename') {
+                renameRomPrompt(romId);
             }
         } else if (infoTarget) {
             const romId = infoTarget.dataset.romId;

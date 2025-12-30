@@ -102,6 +102,7 @@ export function updateBorderColor(colorIndex) {
     }, previousState);
     
     updatePreview();
+    updateColorPaletteSelections();
     updateHistoryUI();
 }
 
@@ -117,6 +118,7 @@ export function updateBackgroundColor(colorIndex) {
     }, previousState);
     
     updatePreview();
+    updateColorPaletteSelections();
     updateHistoryUI();
 }
 
@@ -132,6 +134,7 @@ export function updateTextColor(colorIndex) {
     }, previousState);
     
     updatePreview();
+    updateColorPaletteSelections();
     updateHistoryUI();
 }
 
@@ -150,6 +153,63 @@ export function updatePreview() {
     
     textarea.value = "\r" + currentRomState.line1 + currentRomState.line2 + "38911 BASIC BYTES FREE \r\rREADY.\r█";
     applyColors();
+}
+
+function updateColorPaletteSelections() {
+    const colorGroups = document.querySelectorAll('.color-group');
+    
+    // Update border color palette (index 0)
+    if (colorGroups[0]) {
+        updatePaletteSelection(colorGroups[0], currentRomState.borderColor);
+    }
+    
+    // Update background color palette (index 1)
+    if (colorGroups[1]) {
+        updatePaletteSelection(colorGroups[1], currentRomState.backgroundColor);
+    }
+    
+    // Update text color palette (index 2)
+    if (colorGroups[2]) {
+        updatePaletteSelection(colorGroups[2], currentRomState.textColor);
+    }
+}
+
+function updatePaletteSelection(colorGroup, colorIndex) {
+    const palette = colorGroup.querySelector('.color-palette');
+    if (!palette) return;
+    
+    const colorName = getColorNameFromIndex(colorIndex);
+    
+    // Remove selected from all swatches
+    palette.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+    
+    // Add selected to the correct swatch
+    const targetSwatch = palette.querySelector(`[data-color="${colorName}"]`);
+    if (targetSwatch) {
+        targetSwatch.classList.add('selected');
+    }
+}
+
+function getColorNameFromIndex(index) {
+    const indexToColorMap = {
+        0: 'black',
+        1: 'white',
+        2: 'red',
+        3: 'cyan',
+        4: 'purple',
+        5: 'green',
+        6: 'blue',
+        7: 'yellow',
+        8: 'orange',
+        9: 'brown',
+        10: 'light-red',
+        11: 'gray-1',
+        12: 'gray-2',
+        13: 'light-green',
+        14: 'light-blue',
+        15: 'gray-3'
+    };
+    return indexToColorMap[index] || 'black';
 }
 
 export async function saveChangesToRom() {
@@ -273,6 +333,7 @@ function applyStateToUI() {
     if (line2Input) line2Input.value = currentRomState.line2;
     
     updatePreview();
+    updateColorPaletteSelections();
 }
 
 function updateHistoryUI() {

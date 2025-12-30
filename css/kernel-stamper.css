@@ -504,6 +504,15 @@ textarea:focus {
 	height: 18px;
 }
 
+.rom-btn-rename {
+	color: var(--text-secondary);
+}
+
+.rom-btn-rename:hover {
+	background: var(--surface);
+	color: #EEEE77;
+}
+
 .rom-btn-delete {
 	color: #ff4444;
 }

@@ -95,6 +95,19 @@ export function updateRomData(romId, newData) {
     return false;
 }
 
+export function renameRom(romId, newName) {
+    const roms = getRomsFromStorage();
+    const rom = roms[romId];
+    
+    if (rom) {
+        rom.name = newName;
+        rom.lastModified = new Date().toISOString();
+        localStorage.setItem('c64-roms', JSON.stringify(roms));
+        return true;
+    }
+    return false;
+}
+
 // History Management Functions
 
 function getHistoryKey(romId) {
