@@ -4,11 +4,55 @@ import { saveRomToStorage } from './storage.js';
 import { processRomFile } from './rom-processor.js';
 import { loadRomBrowser } from './rom-browser.js';
 
+// ROM file validation constants
+const VALID_EXTENSIONS = ['.bin', '.rom'];
+const MIN_ROM_SIZE = 4096;  // 4KB minimum
+const MAX_ROM_SIZE = 65536; // 64KB maximum (allow for larger ROMs)
+const TYPICAL_C64_ROM_SIZE = 8192; // 8KB for reference
+
+function validateRomFile(file) {
+    const errors = [];
+    
+    // Check file extension
+    const fileName = file.name.toLowerCase();
+    const hasValidExtension = VALID_EXTENSIONS.some(ext => fileName.endsWith(ext));
+    
+    if (!hasValidExtension) {
+        errors.push(`Invalid file type. Please upload a ROM file with extension: ${VALID_EXTENSIONS.join(', ')}`);
+    }
+    
+    // Check file size
+    if (file.size < MIN_ROM_SIZE) {
+        errors.push(`File is too small (${file.size} bytes). ROM files should be at least ${MIN_ROM_SIZE} bytes.`);
+    } else if (file.size > MAX_ROM_SIZE) {
+        errors.push(`File is too large (${file.size} bytes). ROM files should not exceed ${MAX_ROM_SIZE} bytes.`);
+    }
+    
+    // Warn if size is unusual (not exactly 8KB)
+    if (file.size !== TYPICAL_C64_ROM_SIZE && file.size >= MIN_ROM_SIZE && file.size <= MAX_ROM_SIZE) {
+        console.warn(`Note: File size is ${file.size} bytes. Typical C64 ROM size is ${TYPICAL_C64_ROM_SIZE} bytes (8KB).`);
+    }
+    
+    return {
+        valid: errors.length === 0,
+        errors: errors
+    };
+}
+
 export function handleFileUpload(event) {
     const romFiles = event.target.files;
     const romFile = romFiles[0];
     
     if (!romFile) return;
+    
+    // Validate file before processing
+    const validation = validateRomFile(romFile);
+    if (!validation.valid) {
+        alert('Upload Error:\n\n' + validation.errors.join('\n\n'));
+        // Clear the file input
+        event.target.value = '';
+        return;
+    }
     
     console.log(romFile.name + " is " + romFile.size + " bytes");
     
@@ -67,6 +111,15 @@ export function setupDragAndDrop() {
         const fileInput = document.getElementById('file-input');
         
         if (files.length > 0) {
+            const file = files[0];
+            
+            // Validate dropped file
+            const validation = validateRomFile(file);
+            if (!validation.valid) {
+                alert('Upload Error:\n\n' + validation.errors.join('\n\n'));
+                return;
+            }
+            
             fileInput.files = files;
             handleFileUpload({ target: fileInput });
         }
