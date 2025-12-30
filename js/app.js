@@ -2,7 +2,7 @@
 
 import { loadRomBrowser, setupRomBrowserEvents } from './modules/rom-browser.js';
 import { handleFileUpload, setupDragAndDrop } from './modules/file-upload.js';
-import { setupEditorListeners } from './modules/rom-editor.js';
+import { setupEditorListeners, saveChangesToRom } from './modules/rom-editor.js';
 
 // Initialize application
 function init() {
@@ -27,6 +27,14 @@ function init() {
     if (uploadButton && fileInput) {
         uploadButton.addEventListener('click', () => {
             fileInput.click();
+        });
+    }
+    
+    // Setup save changes button
+    const saveChangesBtn = document.getElementById('save-changes-btn');
+    if (saveChangesBtn) {
+        saveChangesBtn.addEventListener('click', () => {
+            saveChangesToRom();
         });
     }
 }

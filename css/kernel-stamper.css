@@ -280,6 +280,42 @@ body {
 	height: 18px;
 }
 
+/* Save Changes Button */
+.save-changes-btn {
+	width: 100%;
+	padding: 0.875rem 1.5rem;
+	margin-top: 1.5rem;
+	background: linear-gradient(135deg, var(--primary-color) 0%, #0066cc 100%);
+	color: white;
+	border: none;
+	border-radius: 8px;
+	font-size: 0.9375rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: var(--transition);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.625rem;
+	box-shadow: 0 4px 12px rgba(0, 136, 255, 0.3);
+}
+
+.save-changes-btn:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 6px 20px rgba(0, 136, 255, 0.4);
+	background: linear-gradient(135deg, #0099ff 0%, #0077dd 100%);
+}
+
+.save-changes-btn:active {
+	transform: translateY(0);
+	box-shadow: 0 2px 8px rgba(0, 136, 255, 0.3);
+}
+
+.save-changes-btn svg {
+	width: 20px;
+	height: 20px;
+}
+
 /* C64 Screen Preview */
 #c64-screen {
 	display: flex;

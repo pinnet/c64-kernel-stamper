@@ -1,6 +1,6 @@
 // ROM Editor Module - Handles editing and tracks changes
 
-import { addHistoryEntry, canUndo, canRedo, undo, redo, getHistorySummary, getRomById, updateRomData } from './storage.js';
+import { addHistoryEntry, canUndo, canRedo, undo, redo, getHistorySummary, getRomById, updateRomData, saveRomToStorage, isOriginalRom } from './storage.js';
 
 let currentRomId = null;
 let currentRomState = {
@@ -22,6 +22,23 @@ const colors = [
     "000000", "FFFFFF", "880000", "AAFFEE", "CC44CC", "00CC55", "0000AA", "EEEE77",
     "DD8855", "664400", "FF7777", "333333", "777777", "AAFF66", "0088FF", "BBBBBB"
 ];
+
+// Generate child version name
+function generateChildName(parentName) {
+    const lastDot = parentName.lastIndexOf('.');
+    const extension = lastDot > 0 ? parentName.substring(lastDot) : '';
+    const baseName = lastDot > 0 ? parentName.substring(0, lastDot) : parentName;
+    
+    // Add timestamp suffix
+    const timestamp = new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' }).replace(':', '');
+    const newBaseName = `${baseName}-v${timestamp}`;
+    
+    // Ensure total length doesn't exceed 25 chars with extension
+    const maxBaseLength = 25 - extension.length;
+    const finalBaseName = newBaseName.substring(0, maxBaseLength);
+    
+    return finalBaseName + extension;
+}
 
 export function setCurrentRom(romId) {
     currentRomId = romId;
@@ -264,6 +281,9 @@ export async function saveChangesToRom() {
         return false;
     }
     
+    // Check if this is an original ROM
+    const isOriginal = isOriginalRom(currentRomId);
+    
     try {
         // Convert the base64 data back to a blob
         const response = await fetch(rom.data);
@@ -298,11 +318,35 @@ export async function saveChangesToRom() {
         
         return new Promise((resolve) => {
             reader.onload = function(e) {
-                const success = updateRomData(currentRomId, e.target.result);
-                if (success) {
-                    console.log('ROM data updated in localStorage');
-                    showSaveNotification();
+                let success;
+                
+                if (isOriginal) {
+                    // Create a new child version for original ROMs
+                    const newName = generateChildName(rom.name);
+                    const newRomId = saveRomToStorage(newName, e.target.result, newBlob.size, currentRomId);
+                    
+                    if (newRomId) {
+                        success = true;
+                        // Switch to the new child ROM
+                        currentRomId = newRomId;
+                        setCurrentRom(newRomId);
+                        console.log('Created child ROM version:', newName);
+                        showSaveNotification('New version created: ' + newName);
+                        
+                        // Trigger browser reload via custom event
+                        window.dispatchEvent(new CustomEvent('rom-tree-update'));
+                    } else {
+                        success = false;
+                    }
+                } else {
+                    // Update existing child ROM in place
+                    success = updateRomData(currentRomId, e.target.result);
+                    if (success) {
+                        console.log('ROM data updated in localStorage');
+                        showSaveNotification();
+                    }
                 }
+                
                 resolve(success);
             };
             reader.readAsDataURL(newBlob);
@@ -313,11 +357,11 @@ export async function saveChangesToRom() {
     }
 }
 
-function showSaveNotification() {
+function showSaveNotification(message = 'Saved ✓') {
     const historyInfo = document.getElementById('history-info');
     if (historyInfo) {
         const originalText = historyInfo.textContent;
-        historyInfo.textContent = 'Saved ✓';
+        historyInfo.textContent = message;
         historyInfo.style.color = '#00CC55';
         setTimeout(() => {
             historyInfo.textContent = originalText;

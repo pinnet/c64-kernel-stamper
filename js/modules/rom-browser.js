@@ -11,7 +11,7 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-// Generate suggested name from ROM content (max 15 chars including extension)
+// Generate suggested name from ROM content (max 25 chars including extension)
 function generateSuggestedName(rom) {
     try {
         // Extract file extension from original name
@@ -31,8 +31,8 @@ function generateSuggestedName(rom) {
             }
         }
         
-        // Calculate max chars for name (15 total - extension length)
-        const maxNameLength = 15 - extension.length;
+        // Calculate max chars for name (25 total - extension length)
+        const maxNameLength = 25 - extension.length;
         
         // Clean and truncate to create filename
         let suggested = line1.trim()
@@ -51,7 +51,7 @@ function generateSuggestedName(rom) {
         console.error('Error generating suggested name:', e);
         const lastDot = rom.name.lastIndexOf('.');
         const extension = lastDot > 0 ? rom.name.substring(lastDot) : '';
-        return rom.name.substring(0, 15 - extension.length) + extension;
+        return rom.name.substring(0, 25 - extension.length) + extension;
     }
 }
 
@@ -159,7 +159,7 @@ export function renameRomPrompt(romId) {
         // Generate suggested name based on ROM content
         const suggestedName = generateSuggestedName(rom);
         
-        const newName = prompt('Enter new name (max 15 chars with extension):', suggestedName);
+        const newName = prompt('Enter new name (max 25 chars with extension):', suggestedName);
         
         if (newName && newName.trim() !== '' && newName !== rom.name) {
             let finalName = newName.trim();
@@ -168,10 +168,10 @@ export function renameRomPrompt(romId) {
             if (!finalName.endsWith(extension)) {
                 // Remove any existing extension and add the original one
                 const userNameWithoutExt = finalName.replace(/\.[^.]*$/, '');
-                finalName = userNameWithoutExt.substring(0, 15 - extension.length) + extension;
+                finalName = userNameWithoutExt.substring(0, 25 - extension.length) + extension;
             } else {
-                // Truncate to 15 characters max (already has extension)
-                finalName = finalName.substring(0, 15);
+                // Truncate to 25 characters max (already has extension)
+                finalName = finalName.substring(0, 25);
             }
             
             const success = renameRom(romId, finalName);
@@ -268,6 +268,11 @@ export function setupRomBrowserEvents() {
     
     // Setup color palette click handlers
     setupColorPaletteEvents();
+    
+    // Listen for tree updates (when new child versions are created)
+    window.addEventListener('rom-tree-update', () => {
+        loadRomBrowser();
+    });
 }
 
 function setupColorPaletteEvents() {
