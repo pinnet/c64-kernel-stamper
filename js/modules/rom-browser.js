@@ -11,6 +11,50 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
+// Generate suggested name from ROM content (max 15 chars including extension)
+function generateSuggestedName(rom) {
+    try {
+        // Extract file extension from original name
+        const lastDot = rom.name.lastIndexOf('.');
+        const extension = lastDot > 0 ? rom.name.substring(lastDot) : '.bin';
+        
+        // Decode base64 ROM data
+        const base64Data = rom.data.split(',')[1];
+        const binaryString = atob(base64Data);
+        
+        // Extract Line 1 (bytes 1141-1177)
+        let line1 = '';
+        for (let i = 1141; i < 1178; i++) {
+            const char = binaryString.charCodeAt(i);
+            if (char >= 32 && char <= 126) {
+                line1 += String.fromCharCode(char);
+            }
+        }
+        
+        // Calculate max chars for name (15 total - extension length)
+        const maxNameLength = 15 - extension.length;
+        
+        // Clean and truncate to create filename
+        let suggested = line1.trim()
+            .replace(/\s+/g, '-')  // Replace spaces with hyphens
+            .replace(/[^a-zA-Z0-9-]/g, '')  // Remove special characters
+            .substring(0, maxNameLength);  // Max chars minus extension
+        
+        // Fallback if line1 is empty or too short
+        if (suggested.length < 3) {
+            suggested = 'C64-ROM-' + (rom.metadata?.changeCount || 0);
+            suggested = suggested.substring(0, maxNameLength);
+        }
+        
+        return suggested + extension;
+    } catch (e) {
+        console.error('Error generating suggested name:', e);
+        const lastDot = rom.name.lastIndexOf('.');
+        const extension = lastDot > 0 ? rom.name.substring(lastDot) : '';
+        return rom.name.substring(0, 15 - extension.length) + extension;
+    }
+}
+
 export function loadRomBrowser() {
     const romList = document.getElementById('rom-list');
     const roms = getRomsFromStorage();
@@ -89,10 +133,29 @@ export function renameRomPrompt(romId) {
     const rom = getRomById(romId);
     
     if (rom) {
-        const newName = prompt('Enter new name:', rom.name);
+        // Extract original extension
+        const lastDot = rom.name.lastIndexOf('.');
+        const extension = lastDot > 0 ? rom.name.substring(lastDot) : '.bin';
+        
+        // Generate suggested name based on ROM content
+        const suggestedName = generateSuggestedName(rom);
+        
+        const newName = prompt('Enter new name (max 15 chars with extension):', suggestedName);
         
         if (newName && newName.trim() !== '' && newName !== rom.name) {
-            const success = renameRom(romId, newName.trim());
+            let finalName = newName.trim();
+            
+            // Ensure extension is present
+            if (!finalName.endsWith(extension)) {
+                // Remove any existing extension and add the original one
+                const userNameWithoutExt = finalName.replace(/\.[^.]*$/, '');
+                finalName = userNameWithoutExt.substring(0, 15 - extension.length) + extension;
+            } else {
+                // Truncate to 15 characters max (already has extension)
+                finalName = finalName.substring(0, 15);
+            }
+            
+            const success = renameRom(romId, finalName);
             if (success) {
                 loadRomBrowser();
                 
