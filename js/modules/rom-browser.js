@@ -202,9 +202,13 @@ function setupColorPaletteEvents() {
             const colorName = swatch.dataset.color;
             const colorIndex = getColorIndex(colorName);
             
-            // Remove active from all swatches in this palette
-            palette.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+            // Remove active from all swatches in this palette and set aria-pressed to false
+            palette.querySelectorAll('.color-swatch').forEach(s => {
+                s.classList.remove('selected');
+                s.setAttribute('aria-pressed', 'false');
+            });
             swatch.classList.add('selected');
+            swatch.setAttribute('aria-pressed', 'true');
             
             // Update the appropriate color based on which palette (0=border, 1=background, 2=text)
             if (index === 0) {

@@ -213,13 +213,17 @@ function updatePaletteSelection(colorGroup, colorIndex) {
     
     const colorName = getColorNameFromIndex(colorIndex);
     
-    // Remove selected from all swatches
-    palette.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+    // Remove selected from all swatches and set aria-pressed to false
+    palette.querySelectorAll('.color-swatch').forEach(s => {
+        s.classList.remove('selected');
+        s.setAttribute('aria-pressed', 'false');
+    });
     
-    // Add selected to the correct swatch
+    // Add selected to the correct swatch and set aria-pressed to true
     const targetSwatch = palette.querySelector(`[data-color="${colorName}"]`);
     if (targetSwatch) {
         targetSwatch.classList.add('selected');
+        targetSwatch.setAttribute('aria-pressed', 'true');
     }
 }
 
