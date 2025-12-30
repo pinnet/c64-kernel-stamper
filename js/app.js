@@ -21,6 +21,14 @@ function init() {
     if (fileInput) {
         fileInput.addEventListener('change', handleFileUpload);
     }
+    
+    // Setup upload button to trigger file input
+    const uploadButton = document.getElementById('upload-button');
+    if (uploadButton && fileInput) {
+        uploadButton.addEventListener('click', () => {
+            fileInput.click();
+        });
+    }
 }
 
 // Run initialization when DOM is ready
