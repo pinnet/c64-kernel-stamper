@@ -66,6 +66,9 @@ export function setCurrentRomState(state) {
     currentRomState = { ...state };
     originalLine1 = state.line1;
     originalLine2 = state.line2;
+    
+    // Update color palette selections to reflect loaded ROM colors
+    updateColorPaletteSelections();
 }
 
 export function getCurrentRomState() {
