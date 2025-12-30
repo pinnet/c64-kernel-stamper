@@ -71,6 +71,7 @@ export function updateLine1(newValue) {
         oldValue: previousState.line1
     }, previousState);
     
+    updatePreview();
     updateHistoryUI();
 }
 
@@ -85,6 +86,7 @@ export function updateLine2(newValue) {
         oldValue: previousState.line2
     }, previousState);
     
+    updatePreview();
     updateHistoryUI();
 }
 
@@ -99,7 +101,7 @@ export function updateBorderColor(colorIndex) {
         oldValue: previousState.borderColor
     }, previousState);
     
-    applyColors();
+    updatePreview();
     updateHistoryUI();
 }
 
@@ -114,7 +116,7 @@ export function updateBackgroundColor(colorIndex) {
         oldValue: previousState.backgroundColor
     }, previousState);
     
-    applyColors();
+    updatePreview();
     updateHistoryUI();
 }
 
@@ -129,7 +131,7 @@ export function updateTextColor(colorIndex) {
         oldValue: previousState.textColor
     }, previousState);
     
-    applyColors();
+    updatePreview();
     updateHistoryUI();
 }
 
@@ -140,6 +142,14 @@ export function applyColors() {
     textarea.style.borderColor = "#" + colors[currentRomState.borderColor];
     textarea.style.backgroundColor = "#" + colors[currentRomState.backgroundColor];
     textarea.style.color = "#" + colors[currentRomState.textColor];
+}
+
+export function updatePreview() {
+    const textarea = document.getElementById("c64-screen-text");
+    if (!textarea) return;
+    
+    textarea.value = "\r" + currentRomState.line1 + currentRomState.line2 + "38911 BASIC BYTES FREE \r\rREADY.\r█";
+    applyColors();
 }
 
 export async function saveChangesToRom() {
@@ -262,7 +272,7 @@ function applyStateToUI() {
     if (line1Input) line1Input.value = currentRomState.line1;
     if (line2Input) line2Input.value = currentRomState.line2;
     
-    applyColors();
+    updatePreview();
 }
 
 function updateHistoryUI() {
