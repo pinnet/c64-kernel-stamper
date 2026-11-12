@@ -105,7 +105,9 @@ export function getCurrentRomState() {
 export function updateLine1(newValue) {
     if (!currentRomId) return;
     
-    const previousState = getCurrentRomState();
+    // Live preview has already written the typed text into the state,
+    // so take the pre-edit text from originalLine1
+    const previousState = { ...getCurrentRomState(), line1: originalLine1 };
     currentRomState.line1 = newValue;
     
     // Only add history if value actually changed from original
@@ -125,7 +127,9 @@ export function updateLine1(newValue) {
 export function updateLine2(newValue) {
     if (!currentRomId) return;
     
-    const previousState = getCurrentRomState();
+    // Live preview has already written the typed text into the state,
+    // so take the pre-edit text from originalLine2
+    const previousState = { ...getCurrentRomState(), line2: originalLine2 };
     currentRomState.line2 = newValue;
     
     // Only add history if value actually changed from original
@@ -458,6 +462,10 @@ function applyStateToUI() {
     
     if (line1Input) line1Input.value = currentRomState.line1;
     if (line2Input) line2Input.value = currentRomState.line2;
+    
+    // Keep the pre-edit baseline in step with undo/redo
+    originalLine1 = currentRomState.line1;
+    originalLine2 = currentRomState.line2;
     
     updatePreview();
     updateColorPaletteSelections();

@@ -3,7 +3,10 @@
 export function saveRomToStorage(fileName, fileData, fileSize, parentId = null) {
     try {
         const roms = getRomsFromStorage();
-        const romId = Date.now().toString();
+        // Time-based ID, bumped if two ROMs are saved within the same millisecond
+        let idNum = Date.now();
+        while (roms[idNum.toString()]) idNum++;
+        const romId = idNum.toString();
         
         roms[romId] = {
             id: romId,
@@ -142,6 +145,7 @@ export function initializeRomHistory(romId) {
     };
     
     localStorage.setItem(historyKey, JSON.stringify(history));
+    return history;
 }
 
 export function addHistoryEntry(romId, changeType, changeData, previousState) {
@@ -149,14 +153,7 @@ export function addHistoryEntry(romId, changeType, changeData, previousState) {
         const historyKey = getHistoryKey(romId);
         const historyJson = localStorage.getItem(historyKey);
         
-        let history;
-        if (!historyJson) {
-            initializeRomHistory(romId);
-            // Re-read after initialization
-            history = JSON.parse(localStorage.getItem(historyKey));
-        } else {
-            history = JSON.parse(historyJson);
-        }
+        const history = historyJson ? JSON.parse(historyJson) : initializeRomHistory(romId);
         
         // Remove any redo history if we're not at the end
         if (history.currentIndex < history.changes.length - 1) {
@@ -196,12 +193,7 @@ export function getRomHistory(romId) {
     const historyKey = getHistoryKey(romId);
     const historyJson = localStorage.getItem(historyKey);
     
-    if (!historyJson) {
-        initializeRomHistory(romId);
-        return JSON.parse(localStorage.getItem(historyKey));
-    }
-    
-    return JSON.parse(historyJson);
+    return historyJson ? JSON.parse(historyJson) : initializeRomHistory(romId);
 }
 
 export function canUndo(romId) {

@@ -142,7 +142,7 @@ function createRomItem(rom, level = 0) {
 export function deleteRomPrompt(romId) {
     const rom = getRomById(romId);
     
-    if (rom && confirm(`Delete "${escapeHtml(rom.name)}"?`)) {
+    if (rom && confirm(`Delete "${rom.name}"?`)) {
         deleteRomFromStorage(romId);
         loadRomBrowser();
     }
