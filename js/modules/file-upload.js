@@ -108,7 +108,6 @@ export function setupDragAndDrop() {
     uploadLabel.addEventListener('drop', (e) => {
         const dt = e.dataTransfer;
         const files = dt.files;
-        const fileInput = document.getElementById('file-input');
         
         if (files.length > 0) {
             const file = files[0];
@@ -120,8 +119,8 @@ export function setupDragAndDrop() {
                 return;
             }
             
-            fileInput.files = files;
-            handleFileUpload({ target: fileInput });
+            // Pass the dropped files directly; assigning to input.files fails in some browsers
+            handleFileUpload({ target: { files, value: '' } });
         }
     });
 }

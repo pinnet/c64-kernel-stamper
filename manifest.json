@@ -2,12 +2,12 @@
   "name": "C64 Kernel Stamper - Commodore 64 Boot Screen Editor",
   "short_name": "C64 Kernel Stamper",
   "description": "Customize your Commodore 64 boot screen by editing kernel ROM text and colors",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#0a0e1a",
   "theme_color": "#0088FF",
   "orientation": "any",
-  "scope": "/",
+  "scope": "./",
   "icons": [
     {
       "src": "icons/icon-72x72.png",
@@ -62,19 +62,5 @@
     "utilities",
     "productivity",
     "developer tools"
-  ],
-  "screenshots": [
-    {
-      "src": "screenshots/desktop.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide"
-    },
-    {
-      "src": "screenshots/mobile.png",
-      "sizes": "540x720",
-      "type": "image/png",
-      "form_factor": "narrow"
-    }
   ]
 }

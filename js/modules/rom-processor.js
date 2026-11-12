@@ -1,6 +1,6 @@
 // ROM File Processing Module
 
-import { setCurrentRomState, setCurrentRom, applyColors, resetEditorState } from './rom-editor.js';
+import { setCurrentRomState, setCurrentRom, resetEditorState } from './rom-editor.js';
 
 const colors = [
     "000000", "FFFFFF", "880000", "AAFFEE", "CC44CC", "00CC55", "0000AA", "EEEE77",

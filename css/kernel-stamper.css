@@ -80,7 +80,6 @@ body {
 
 .card:hover {
 	box-shadow: 0 12px 32px var(--shadow);
-	transform: translateY(-2px);
 }
 
 /* Upload Section */
@@ -546,7 +545,6 @@ textarea:focus {
 .rom-item:hover {
 	background: var(--surface);
 	border-color: var(--primary-color);
-	transform: translateX(4px);
 }
 
 .rom-item.active {
